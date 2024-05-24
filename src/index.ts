@@ -12,7 +12,22 @@ const pezzo = new Pezzo({
 
 const openai = new PezzoOpenAI(pezzo);
 
-app.get('/completion', async (req, res) => {
+app.get('/observe', async (req, res) => {
+  const completion = await openai.chat.completions.create({
+    model: 'gpt-3.5-turbo',
+    temperature: 0,
+    messages: [
+      {
+        role: 'user',
+        content: 'Tell me 5 fun facts about yourself',
+      },
+    ],
+  });
+
+  res.send(completion.choices[0].message.content);
+});
+
+app.get('/prompt', async (req, res) => {
   const numFacts = req.query.numFacts?.toString() ?? '3';
   const topic = req.query.topic?.toString() ?? 'Cats';
 
